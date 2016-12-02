@@ -23,6 +23,9 @@ public class QueryReader {
         scanner.close();
 
         PoemFinder poemFinder = new PoemFinder(query,indexPath);
+
+        System.out.println(poemFinder.find());
+
     }
 
 }
