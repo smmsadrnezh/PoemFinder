@@ -1,3 +1,5 @@
+import org.apache.lucene.queryparser.classic.ParseException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,7 +9,7 @@ public class QueryReader {
     /**
      * Index all text files under a directory.
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ParseException {
 
         // Build the Index
 
@@ -17,6 +19,8 @@ public class QueryReader {
         PoemIndexer poemIndexer = new PoemIndexer(docsPath, indexPath);
         poemIndexer.buildIndex();
 
+        PoemFinder poemFinder = new PoemFinder();
+
         // Parse and Build Query
         String query = readQuery();
 
@@ -24,19 +28,19 @@ public class QueryReader {
         for (String queryClause : queryArray) {
             switch (queryClause.split(":")[0].replaceAll("#", "").replaceAll("null", "").trim()) {
                 case "کتاب":
-                    System.out.println(queryClause.split(":")[1]);
+                    poemFinder.setBook(queryClause.split(":")[1]);
                     break;
                 case "شاعر":
-                    System.out.println(queryClause.split(":")[1]);
+                    poemFinder.setPoet(queryClause.split(":")[1]);
                     break;
                 case "سلسله":
-                    System.out.println(queryClause.split(":")[1]);
+                    poemFinder.setSeries(queryClause.split(":")[1]);
                     break;
                 case "عنوان":
-                    System.out.println(queryClause.split(":")[1]);
+                    poemFinder.setTitle(queryClause.split(":")[1]);
                     break;
                 case "متن":
-                    System.out.println(queryClause.split(":")[1]);
+                    poemFinder.setPoem(queryClause.split(":")[1]);
                     break;
             }
         }
