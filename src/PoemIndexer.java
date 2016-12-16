@@ -11,8 +11,7 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.LongPoint;
+import org.apache.lucene.analysis.fa.PersianAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
@@ -28,7 +27,7 @@ public class PoemIndexer {
     private String docsPath;
     private String indexPath;
 
-    protected PoemIndexer(String docsPath,String indexPath) {
+    protected PoemIndexer(String docsPath, String indexPath) {
         this.docsPath = docsPath;
         this.indexPath = indexPath;
     }
@@ -45,7 +44,7 @@ public class PoemIndexer {
         }
 
         Directory dir = FSDirectory.open(Paths.get(indexPath));
-        Analyzer analyzer = new StandardAnalyzer();
+        Analyzer analyzer = new PersianAnalyzer();
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
         indexWriterConfig.setOpenMode(OpenMode.CREATE);
         IndexWriter writer = new IndexWriter(dir, indexWriterConfig);
@@ -64,7 +63,7 @@ public class PoemIndexer {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 try {
-                    indexDoc(writer, file, attrs.lastModifiedTime().toMillis());
+                    indexDoc(writer, file);
 
                 } catch (IOException ignore) {
                 }
@@ -76,13 +75,36 @@ public class PoemIndexer {
     /**
      * Indexes a single document
      */
-    void indexDoc(IndexWriter writer, Path file, long lastModified) throws IOException {
+    void indexDoc(IndexWriter writer, Path file) throws IOException {
         try (InputStream stream = Files.newInputStream(file)) {
             Document doc = new Document();
             Field pathField = new StringField("path", file.toString(), Field.Store.YES);
             doc.add(pathField);
-            doc.add(new LongPoint("modified", lastModified));
-            doc.add(new TextField("contents", new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))));
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
+            String singleLine;
+            String poem = null;
+            for (int i = 0; (singleLine = bufferedReader.readLine()) != null; i++) {
+                switch (i) {
+                    case 2:
+                        doc.add(new StringField("poet", singleLine, Field.Store.YES));
+                        break;
+                    case 4:
+                        doc.add(new StringField("book", singleLine,Field.Store.YES));
+                        break;
+                    case 6:
+                        doc.add(new StringField("series", singleLine,Field.Store.YES));
+                        break;
+                    case 8:
+                        doc.add(new StringField("title", singleLine,Field.Store.YES));
+                        break;
+                    // You can have any number of case statements.
+                    default:
+                        if (i > 9) {
+                            poem += singleLine;
+                        }
+                }
+            }
+            doc.add(new TextField("poem", poem,Field.Store.YES));
 
             // New index, so we just add the document (no old document can be there):
             writer.addDocument(doc);

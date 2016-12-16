@@ -1,5 +1,6 @@
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Scanner;
+import java.io.InputStreamReader;
 
 public class QueryReader {
 
@@ -8,24 +9,52 @@ public class QueryReader {
      */
     public static void main(String[] args) throws IOException {
 
-        /**
-         * Setting Index and Data Dirs
-         */
+        // Build the Index
 
         String docsPath = "/home/smmsadrnezh/IdeaProjects/PoemFinder/PersianPoemsData/Poems";
         String indexPath = "/home/smmsadrnezh/IdeaProjects/PoemFinder/index";
 
-        PoemIndexer poemIndexer = new PoemIndexer(docsPath,indexPath);
+        PoemIndexer poemIndexer = new PoemIndexer(docsPath, indexPath);
         poemIndexer.buildIndex();
 
-        Scanner scanner = new Scanner(System.in);
-        String query = scanner.nextLine();
-        scanner.close();
+        // Parse and Build Query
+        String query = readQuery();
 
-        PoemFinder poemFinder = new PoemFinder(query,indexPath);
+        String[] queryArray = query.split("###");
+        for (String queryClause : queryArray) {
+            switch (queryClause.split(":")[0].replaceAll("#", "").replaceAll("null", "").trim()) {
+                case "کتاب":
+                    System.out.println(queryClause.split(":")[1]);
+                    break;
+                case "شاعر":
+                    System.out.println(queryClause.split(":")[1]);
+                    break;
+                case "سلسله":
+                    System.out.println(queryClause.split(":")[1]);
+                    break;
+                case "عنوان":
+                    System.out.println(queryClause.split(":")[1]);
+                    break;
+                case "متن":
+                    System.out.println(queryClause.split(":")[1]);
+                    break;
+            }
+        }
+    }
 
-        System.out.println(poemFinder.find());
+    private static String readQuery() throws IOException {
 
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        bufferedReader.read();
+
+        String query = null;
+        String line = null;
+
+        while ((line = bufferedReader.readLine()) != null) {
+            query += line;
+        }
+
+        return query;
     }
 
 }
