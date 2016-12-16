@@ -11,20 +11,25 @@ public class QueryReader {
      */
     public static void main(String[] args) throws IOException, ParseException {
 
-        // Build the Index
-
+        // build the index from all text file under a specific directory
         String docsPath = "/home/smmsadrnezh/IdeaProjects/PoemFinder/PersianPoemsData/Poems";
         String indexPath = "/home/smmsadrnezh/IdeaProjects/PoemFinder/index";
 
         PoemIndexer poemIndexer = new PoemIndexer(docsPath, indexPath);
         poemIndexer.buildIndex();
 
-        // Parse and Build Query
+        // config PoemFinder with a query
         PoemFinder poemFinder = new PoemFinder();
-
         String query = readQuery();
+        configPoemFinder(poemFinder,query);
+
+        // Search for poems
+        poemFinder.search();
+    }
+
+    private static void configPoemFinder(PoemFinder poemFinder, String query) {
         String[] queryArray = query.split("###");
-        poemFinder.initSearch(queryArray.length);
+        poemFinder.initSearchArrays(queryArray.length);
         for (String queryClause : queryArray) {
             switch (queryClause.split(":")[0].replaceAll("#", "").replaceAll("null", "").trim()) {
                 case "کتاب":
@@ -44,9 +49,6 @@ public class QueryReader {
                     break;
             }
         }
-
-        // Search for poems
-        poemFinder.search();
     }
 
     private static String readQuery() throws IOException {
@@ -55,7 +57,7 @@ public class QueryReader {
         bufferedReader.read();
 
         String query = null;
-        String line = null;
+        String line;
 
         while ((line = bufferedReader.readLine()) != null) {
             query += line;

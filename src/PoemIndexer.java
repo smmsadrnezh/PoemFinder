@@ -89,13 +89,13 @@ public class PoemIndexer {
                         doc.add(new StringField("poet", singleLine, Field.Store.YES));
                         break;
                     case 4:
-                        doc.add(new StringField("book", singleLine,Field.Store.YES));
+                        doc.add(new StringField("book", singleLine, Field.Store.YES));
                         break;
                     case 6:
-                        doc.add(new StringField("series", singleLine,Field.Store.YES));
+                        doc.add(new StringField("series", singleLine, Field.Store.YES));
                         break;
                     case 8:
-                        doc.add(new StringField("title", singleLine,Field.Store.YES));
+                        doc.add(new StringField("title", singleLine, Field.Store.YES));
                         break;
                     // You can have any number of case statements.
                     default:
@@ -104,7 +104,7 @@ public class PoemIndexer {
                         }
                 }
             }
-            doc.add(new TextField("poem", poem,Field.Store.YES));
+            doc.add(new TextField("poem", poem, Field.Store.YES));
 
             // New index, so we just add the document (no old document can be there):
             writer.addDocument(doc);

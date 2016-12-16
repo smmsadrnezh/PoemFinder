@@ -23,7 +23,7 @@ public class PoemFinder {
     String[] queries;
     int index = 0;
 
-    void initSearch(int size) {
+    void initSearchArrays(int size) {
         fields = new String[size];
         queries = new String[size];
         for (String query : queries
@@ -76,8 +76,8 @@ public class PoemFinder {
         TopDocs topDocs = searcher.search(query, 10);
         ScoreDoc[] hits = topDocs.scoreDocs;
 
-        for (ScoreDoc hit: hits
-             ) {
+        for (ScoreDoc hit : hits
+                ) {
             Document doc = searcher.doc(hit.doc);
             System.out.println(doc.get("path"));
         }
