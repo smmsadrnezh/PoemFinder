@@ -19,12 +19,12 @@ public class QueryReader {
         PoemIndexer poemIndexer = new PoemIndexer(docsPath, indexPath);
         poemIndexer.buildIndex();
 
+        // Parse and Build Query
         PoemFinder poemFinder = new PoemFinder();
 
-        // Parse and Build Query
         String query = readQuery();
-
         String[] queryArray = query.split("###");
+        poemFinder.initSearch(queryArray.length);
         for (String queryClause : queryArray) {
             switch (queryClause.split(":")[0].replaceAll("#", "").replaceAll("null", "").trim()) {
                 case "کتاب":
@@ -44,6 +44,9 @@ public class QueryReader {
                     break;
             }
         }
+
+        // Search for poems
+        poemFinder.search();
     }
 
     private static String readQuery() throws IOException {
