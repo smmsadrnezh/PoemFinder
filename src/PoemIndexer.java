@@ -97,7 +97,6 @@ public class PoemIndexer {
                     case 8:
                         doc.add(new StringField("title", singleLine, Field.Store.YES));
                         break;
-                    // You can have any number of case statements.
                     default:
                         if (i > 9) {
                             poem += singleLine;

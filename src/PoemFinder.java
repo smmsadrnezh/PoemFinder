@@ -1,7 +1,6 @@
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import com.sun.istack.internal.Nullable;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.fa.PersianAnalyzer;
 import org.apache.lucene.document.Document;
@@ -67,6 +66,7 @@ public class PoemFinder {
     }
 
     void search() throws IOException, ParseException {
+
         // instantiate necessary objects
         IndexReader reader = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)));
         IndexSearcher searcher = new IndexSearcher(reader);
